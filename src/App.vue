@@ -1,31 +1,66 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+  <div v-if="applicationEstActive" class="container">
+
+    <header class="navbar" v-if="memberConnected()">
+      <section class="navbar-section">
+        <div class="navbar-brand mr-2">Coop</div>
+          <router-link class="btn btn-link" to="/Discussions">Discussions</router-link>
+          <router-link class="btn btn-link" to="/Membres">Membres</router-link>
+      </section>
+      <section class="navbar-section">
+          Connecté en tant que {{ nomMembre() }}
+          <a class="btn btn-link" @click="seDeconnecter">Se déconnecter</a>
+      </section>
+    </header>
+
+
+
+    <div class="content">
+      <router-view></router-view>
     </div>
-    <router-view/>
+
   </div>
 </template>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-#nav {
-  padding: 30px;
+<script>
+export default {
+  name: 'App',
+  data() {
+    return {
+      applicationEstActive : false
+    }
+  },
+  mounted() {
+    this.testToken(() => {      
+      // http://coop.api.netlor.fr/api/ping
+      window.axios.get('ping').then((response) => {
+
+        this.applicationEstActive = true
+
+        this.chargerMembres()
+
+
+      }).catch((error) => {
+
+        this.applicationEstActive = false
+        alert("L'application n'est pas disponible");
+
+      });
+    });
+
+  }
+};
+</script>
+
+<style scoped>
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
+.router-link-active {
+  color:#888;  
+  text-decoration: underline;
 }
 
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
 </style>
