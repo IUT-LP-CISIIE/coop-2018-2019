@@ -28,10 +28,10 @@
                 <div class="card-header">
                   <form @submit.prevent="editerDiscussion()" class="">
                     <div class="form-group">
-                      <input ref="message" @keyup.esc="annulerEdition" class="form-input input-sm" type="text" v-model="discussionEdit.topic">
+                      <input @keyup.esc="annulerEdition" class="form-input input-sm" type="text" v-model="discussionEdit.topic">
                     </div>
                     <div class="form-group">
-                      <input ref="message" @keyup.esc="annulerEdition" class="form-input input-sm" type="text" v-model="discussionEdit.label">
+                      <input ref="label" @keyup.esc="annulerEdition" class="form-input input-sm" type="text" v-model="discussionEdit.label">
                     </div>
                     <button class="btn btn-primary input-group-btn btn-sm">Valider</button>
                     <a @click="annulerEdition" class="btn btn-link input-group-btn btn-sm">Annuler</a>
@@ -111,9 +111,13 @@ export default {
       this.editer=false;
     },
     activerEdition(discussion) {
+
       this.editer = discussion._id;
       this.discussionEdit.label = discussion.label;
       this.discussionEdit.topic = discussion.topic;
+      setTimeout(() => {
+//        this.$refs.label.focus();
+      },1000)
     },
     chargerDiscussions() {
       window.axios.get('channels').then(response => {
