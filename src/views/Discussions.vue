@@ -20,22 +20,53 @@
           </small>
         </p>
 
-      <div class="columns" v-for="discussions in discussionsCols">
-        <div v-for="discussion in discussions" class="column" :class="'col-'+(12/colonnes)">
-          <div  class="card">
-            <div class="card-header">
-              <div class="card-subtitle text-gray">{{ discussion.label }}</div>
-              <div class="card-title h5">{{ discussion.topic }}</div>
-            </div>
-            <div class="card-body">
-              
-            </div>
-            <div class="card-footer">
-              <router-link :to="{name:'Discussion',params : { id : discussion._id }}" class="btn btn-primary">Ouvrir</router-link>
-            </div>
+        <div class="columns" v-for="discussions in discussionsCols">
+          <div v-for="discussion in discussions" class="column" :class="'col-'+(12/colonnes)">
+
+            <template v-if="editer == discussion._id">
+              <div  class="card">
+                <div class="card-header">
+                  <form @submit.prevent="editerDiscussion()" class="">
+                    <div class="form-group">
+                      <input ref="message" @keyup.esc="annulerEdition" class="form-input input-sm" type="text" v-model="discussionEdit.topic">
+                    </div>
+                    <div class="form-group">
+                      <input ref="message" @keyup.esc="annulerEdition" class="form-input input-sm" type="text" v-model="discussionEdit.label">
+                    </div>
+                    <button class="btn btn-primary input-group-btn btn-sm">Valider</button>
+                    <a @click="annulerEdition" class="btn btn-link input-group-btn btn-sm">Annuler</a>
+                  </form>
+                </div>
+              </div>
+            </template>
+            <template v-else>
+              <div  class="card">
+
+                <div class="card-header">
+                  <div class="card-subtitle text-gray"><code>{{ discussion.topic }}</code></div>
+                  <div class="card-title h5">{{ discussion.label }}</div>
+                </div>
+                <div class="card-body">
+
+                </div>
+                <div class="card-footer">
+                  <router-link :to="{name:'Discussion',params : { id : discussion._id }}" class="btn btn-primary">Ouvrir</router-link>
+
+
+                  <button class="btn btn-link" 
+                  @click="activerEdition(discussion)" 
+                  title="Editer">✏️</button>&nbsp;
+
+                  <button class="btn btn-link" 
+                  @click="effacerDiscussion(discussion)" 
+                  title="Effacer">🗑️</button>
+
+                </div>
+              </div>
+            </template>
+
           </div>
         </div>
-      </div>
       </div>
     </div>
 
@@ -48,8 +79,12 @@ export default {
   data() {
   	return {
       colonnes : 4,
-      discussions : []
-  	}
+      discussions : [],
+      discussionOriginale : false,
+      discussionEdit : {
+      },
+      editer:false
+    }
   },
   computed : {
     discussionsCols() {
@@ -69,21 +104,46 @@ export default {
     }
   },
   mounted() {
-        window.axios.get('channels').then(response => {
-          this.discussions = response.data
-        })
-
+    this.chargerDiscussions();
   },
   methods : {
-
+    annulerEdition(discussion) {
+      this.editer=false;
+    },
+    activerEdition(discussion) {
+      this.editer = discussion._id;
+      this.discussionEdit.label = discussion.label;
+      this.discussionEdit.topic = discussion.topic;
+    },
+    chargerDiscussions() {
+      window.axios.get('channels').then(response => {
+        this.discussions = response.data
+      })
+    },
+    effacerDiscussion(discussion) {
+      if(confirm('Voulez vous effacer cette discussion ?')) {
+        window.axios.delete('channels/'+discussion._id).then((response) => {
+          this.chargerDiscussions();
+        });
+      }
+    },
+    editerDiscussion() {
+      window.axios.put('channels/'+this.editer,{
+        label : this.discussionEdit.label, 
+        topic : this.discussionEdit.topic 
+      }).then((response) => {
+        this.chargerDiscussions();
+        this.editer=false;
+      }) ;
+    }
   }
 
 };
 </script>
 
 <style scoped>
-  .card{
-    margin-bottom: 15px;    
-    min-height: 250px;
-  }
+.card{
+  margin-bottom: 15px;    
+  min-height: 250px;
+}
 </style>

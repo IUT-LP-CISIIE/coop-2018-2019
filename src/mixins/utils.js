@@ -1,9 +1,30 @@
 export const Utils = {
 	methods : {
-		scrollToBottom() {
+		dateFormat(date) {
+			let d = new Date(date);
+			let jour = this.pad(d.getDate());
+			let mois = this.pad(d.getMonth()+1);
+			let annee = d.getFullYear();
+
+			return jour+'/'+mois+'/'+annee;
+		},
+		pad(valeur) {
+			if(valeur<10) {
+				valeur='0'+valeur;
+			}
+			return valeur;
+		},
+		scrollTo(target=false) {
+			let top;
+			if(target) {
+				console.log(target, document.querySelector(target))
+				top = document.querySelector(target).offsetTop;
+			} else {
+				top = document.body.offsetHeight;
+			}
 			setTimeout(() => {
 				window.scroll({
-					top: document.body.offsetHeight, 
+					top: top, 
 					left: 0, 
 					behavior: 'smooth'
 				});

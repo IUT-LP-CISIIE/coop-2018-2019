@@ -5,12 +5,12 @@
       
         <div>
           <b>Sujet</b><br>
-          <input v-model="discussion.topic" required>     
+          <input v-model="discussion.label" required>     
         </div>
 
         <div>
           <b>Etiquette</b><br>
-          <input v-model="discussion.label" required>     
+          <input v-model="discussion.topic" required>     
         </div>
 
     <div>

@@ -2,28 +2,31 @@
   <div class="discussion" v-if="discussion">
     <div class="hero">
       <div class="hero-body">
+        <div class="fixed">
+          <ul class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="/">Coop</a>
+            </li>
+            <li class="breadcrumb-item">
+              <router-link to="/Discussions">Discussions</router-link>
+            </li>
+            <li class="breadcrumb-item">
+              <router-link :to="{name:'Discussion',params:{id:discussion._id}}">{{ discussion.label }}</router-link>
+            </li>
+          </ul>        
 
-        <ul class="breadcrumb">
-          <li class="breadcrumb-item">
-            <a href="/">Coop</a>
-          </li>
-          <li class="breadcrumb-item">
-            <router-link to="/Discussions">Discussions</router-link>
-          </li>
-          <li class="breadcrumb-item">
-            <router-link :to="{name:'Discussion',params:{id:discussion._id}}">{{ discussion.topic }}</router-link>
-          </li>
-        </ul>        
+          <h2>{{ discussion.label }} <small class="label"><code>{{ discussion.topic }}</code></small></h2>
+          <p>
+            <small>
+            </small>
+          </p>
+        </div>
 
-        <h1>{{ discussion.topic }} <small class="label">{{ discussion.label }}</small></h1>
-        <p>
-          <small>
-          </small>
-        </p>
-
-
-        <div class="messages">
+        <div v-if="messages.length" class="messages">
           <message v-for="message in messages" :message="message"/>
+        </div>
+        <div v-else>
+          <center><i>Aucun message dans cette discussion.</i></center>
         </div>
 
 
@@ -60,20 +63,26 @@ export default {
       if(this.discussion.posts) {
         this.messages = this.discussion.posts;
       }
-      setInterval(this.chargerEtScroller,1000);
+      if(this.$route.params.idmessage) {
+        setTimeout(() => {
+          this.scrollTo('#message-'+this.$route.params.idmessage);            
+        },1000)
+      }
+      setInterval(this.chargerEtScroller,5000);
     });
   },
   methods : {
     chargerEtScroller() {
       this.chargerMessages(() => {
-        this.scrollToBottom();            
+        this.scrollTo();            
       });
 
     },
     chargerMessages(callback=false) {
       window.axios.get('channels/'+this.discussion._id+'/posts').then((response) => {
-        if(response.data.length != this.messages.length)  {
-          this.messages = response.data;
+        let count = this.messages.length ;
+        this.messages = response.data;
+        if(response.data.length != count)  {
           if(callback) {
             callback();
           }

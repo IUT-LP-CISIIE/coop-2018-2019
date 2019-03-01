@@ -8,8 +8,9 @@
           <router-link class="btn btn-link" to="/Membres">Membres</router-link>
       </section>
       <section class="navbar-section">
-          Connecté en tant que {{ nomMembre() }}
-          <a class="btn btn-link" @click="seDeconnecter">Se déconnecter</a>
+          Connecté en tant que
+          <router-link :to="{ name : 'Membre', params : {id : $store.state.member.id}}" class="btn btn-link member-name">{{ nomMembre() }}</router-link>
+          <button class="btn btn-link" @click="seDeconnecter">Se déconnecter</button>
       </section>
     </header>
 
