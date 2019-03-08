@@ -40,7 +40,7 @@
               </div>
             </template>
             <template v-else>
-              <div  class="card">
+              <div  class="card discussion">
 
                 <div class="card-header">
                   <div class="card-subtitle text-gray"><code>{{ discussion.topic }}</code></div>
@@ -53,11 +53,11 @@
                   <router-link :to="{name:'Discussion',params : { id : discussion._id }}" class="btn btn-primary">Ouvrir</router-link>
 
 
-                  <button class="btn btn-link" 
+                  <button class="discussion-action btn btn-link" 
                   @click="activerEdition(discussion)" 
                   title="Editer">✏️</button>&nbsp;
 
-                  <button class="btn btn-link" 
+                  <button class="discussion-action btn btn-link" 
                   @click="effacerDiscussion(discussion)" 
                   title="Effacer">🗑️</button>
 
@@ -116,8 +116,8 @@ export default {
       this.discussionEdit.label = discussion.label;
       this.discussionEdit.topic = discussion.topic;
       setTimeout(() => {
-//        this.$refs.label.focus();
-      },1000)
+        this.$refs.label[0].focus();
+      },10)
     },
     chargerDiscussions() {
       window.axios.get('channels').then(response => {
@@ -150,4 +150,11 @@ export default {
   margin-bottom: 15px;    
   min-height: 250px;
 }
+.discussion-action {
+  visibility: hidden;
+}
+.discussion:hover .discussion-action {
+  visibility: visible;
+}
+
 </style>

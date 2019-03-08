@@ -63,9 +63,9 @@ export default {
       if(this.discussion.posts) {
         this.messages = this.discussion.posts;
       }
-      if(this.$route.params.idmessage) {
+      if(this.$route.query.idmessage) {
         setTimeout(() => {
-          this.scrollTo('#message-'+this.$route.params.idmessage);            
+          this.scrollTo('#message-'+this.$route.query.idmessage);            
         },1000)
       }
       setInterval(this.chargerEtScroller,5000);

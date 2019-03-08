@@ -2,7 +2,18 @@
   <div class="membres">
     <div class="hero">
       <div class="hero-body">
-        <h1>Membres</h1>
+ 
+         <ul class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="/">Coop</a>
+          </li>
+          <li class="breadcrumb-item">
+            <router-link to="/Membres">Membres</router-link>
+          </li>
+        </ul>        
+
+
+       <h1>Membres</h1>
         <p>
           <small>
             {{ $store.state.members.length }} membre(s)

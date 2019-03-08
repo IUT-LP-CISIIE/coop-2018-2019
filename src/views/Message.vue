@@ -8,9 +8,9 @@
 		<div class="tile-content">
 			<div class="tile-title">
 				<router-link :to="{ name : 'Membre', params : {id : membre._id}}" class="member-name">{{ membre.fullname }}</router-link>
-				<small v-if="afficherDiscussion">
-					posté le {{ dateFormat(discussion.created_at) }} dans 
-					<router-link :to="{name:'DiscussionMessage', params : { id : discussion._id, idmessage : message._id }}">
+				<small class="discussion" v-if="afficherDiscussion">
+					posté le {{ dateFormat(message.created_at) }} dans 
+					<router-link :to="{name:'Discussion', query : {idmessage : message._id}, params : { id : discussion._id }}">
 					{{ discussion.label }}</b>
 				</router-link> <code>{{ discussion.topic }}</code>
 			</small>
@@ -20,6 +20,7 @@
 
 				<form @submit.prevent="editerMessage" class="input-group">
 					<input ref="message" @keyup.esc="annulerEdition" class="form-input input-sm" type="text" v-model="nouveauMessage">
+					<button type="button" @click="annulerEdition" class="btn btn-text input-group-btn btn-sm">Annuler</button>
 					<button class="btn btn-primary input-group-btn btn-sm">Valider</button>
 				</form>
 
@@ -75,7 +76,7 @@ export default {
 			return !this.editer && this.message.member_id == this.$store.state.member.id
 		},
 		focus() {
-			return this.$route.params.idmessage == this.message._id;
+			return this.$route.query.idmessage == this.message._id;
 		},
 		mine() {
 			return !this.afficherDiscussion && this.actionOk
@@ -121,4 +122,13 @@ export default {
 .focus {
 	background: rgba(255,0,0,0.1);
 }
+
+.discussion_,.tile-action {
+  visibility: hidden;
+}
+.message:hover .discussion,
+.message:hover .tile-action {
+  visibility: visible;
+}
+
 </style>
